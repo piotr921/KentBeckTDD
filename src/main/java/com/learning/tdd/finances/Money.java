@@ -1,6 +1,6 @@
 package com.learning.tdd.finances;
 
-class Money implements Expression{
+class Money implements Expression {
 
     protected int amount;
     protected String currency;
@@ -18,16 +18,24 @@ class Money implements Expression{
         return new Money(amount, "CHF");
     }
 
-    Money times(int multiplier){
+    String currency() {
+        return currency;
+    }
+
+    @Override
+    public Expression times(int multiplier) {
         return new Money(amount * multiplier, currency);
     }
 
-    Expression plus(Money added) {
-        return new Money(this.amount + added.amount, this.currency);
+    @Override
+    public Expression plus(Expression addend) {
+        return new Sum(this, addend);
     }
 
-    String currency(){
-        return currency;
+    @Override
+    public Money reduce(Bank bank, String to) {
+        int rate = bank.rate(currency, to);
+        return new Money(amount / rate, to);
     }
 
     @Override
